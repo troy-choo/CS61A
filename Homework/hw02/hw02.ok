@@ -1,6 +1,6 @@
 {
     "name": "Homework 2",
-    "endpoint": "cal/cs61a/fa22/hw02",
+    "endpoint": "cal/cs61a/sp23/hw02",
     "src": [
         "hw02.py"
     ],
@@ -11,8 +11,11 @@
     "default_tests": [
         "product",
         "accumulate",
-        "summation_using_accumulate",
-        "product_using_accumulate"
+        "funception",
+        "mul_by_num",
+        "mod_maker",
+        "add_results",
+        "lambda_math_syntax_check"
     ],
     "protocols": [
         "restore",

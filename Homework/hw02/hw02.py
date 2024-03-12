@@ -1,4 +1,3 @@
-from msvcrt import kbhit
 from operator import add, mul
 
 square = lambda x: x * x
@@ -33,11 +32,9 @@ def product(n, term):
     162
     """
     "*** YOUR CODE HERE ***"
-    k = 1
-    total = 1
-    while k <= n:
-        total = total * term(k)
-        k += 1
+    i, total = 1, 1
+    while i <= n:
+        i, total = i + 1, total * term(i)
     return total
 
 def accumulate(merger, start, n, term):
@@ -65,11 +62,9 @@ def accumulate(merger, start, n, term):
     16
     """
     "*** YOUR CODE HERE ***"
-    total = start
-    k = 1
-    while k <= n:
-        total = merger(total, term(k))
-        k += 1
+    i, total = 1, start
+    while i <= n:
+        i, total = i + 1, merger(term(i), total)
     return total
 
 def summation_using_accumulate(n, term):
@@ -86,8 +81,8 @@ def summation_using_accumulate(n, term):
     >>> [type(x).__name__ for x in ast.parse(inspect.getsource(summation_using_accumulate)).body[0].body]
     ['Expr', 'Return']
     """
-    
     return accumulate(add, 0, n, term)
+
 
 def product_using_accumulate(n, term):
     """Returns the product: term(1) * ... * term(n), using accumulate.
@@ -104,3 +99,114 @@ def product_using_accumulate(n, term):
     ['Expr', 'Return']
     """
     return accumulate(mul, 1, n, term)
+
+
+def funception(func1, start):
+    """ Takes in a function (function 1) and a start value.
+    Returns a function (function 2) that will find the product of
+    function 1 applied to the range of numbers from
+    start (inclusive) to stop (exclusive)
+
+    >>> def func1(num):
+    ...     return num + 1
+    >>> func2_1 = funception(func1, 0)
+    >>> func2_1(3)    # func1(0) * func1(1) * func1(2) = 1 * 2 * 3 = 6
+    6
+    >>> func2_2 = funception(func1, 1)
+    >>> func2_2(4)    # func1(1) * func1(2) * func1(3) = 2 * 3 * 4 = 24
+    24
+    >>> func2_3 = funception(func1, 3)
+    >>> func2_3(2)    # Returns func1(3) since start >= stop
+    4
+    >>> func2_4 = funception(func1, 3)
+    >>> func2_4(3)    # Returns func1(3) since start >= stop
+    4
+    >>> func2_5 = funception(func1, -2)
+    >>> func2_5(-3)    # Returns None since start < 0
+    >>> func2_6 = funception(func1, -1)
+    >>> func2_6(4)    # Returns None since start < 0
+    """
+    "*** YOUR CODE HERE ***"
+    def funception2(stop):
+        if start < 0:
+            return None
+        elif start >= stop:
+            return func1(start)
+        else:
+            total = 1
+            for i in range(start, stop):
+                total = func1(i) * total
+            return total
+
+    return funception2
+
+def mul_by_num(num):
+    """Returns a function that takes one argument and returns num
+    times that argument.
+
+    >>> x = mul_by_num(5)
+    >>> y = mul_by_num(2)
+    >>> x(3)
+    15
+    >>> y(-4)
+    -8
+    """
+    
+    return lambda x: x * num
+
+
+def mod_maker():
+    """Return a two-argument function that performs the modulo operation and returns True if the numbers are divisble, and the remainder otherwise.
+
+    >>> mod = mod_maker()
+    >>> mod(7, 2) # 7 % 2
+    1
+    >>> mod(4, 8) # 4 % 8
+    4
+    >>> mod(8,4) # 8 % 4
+    True
+    """
+      
+    return lambda x, y: x % y == 0 if x % y == 0 else x % y 
+
+
+def add_results(f1, f2):
+    """
+    Return a function that takes in a single variable x, and returns
+    f1(x) + f2(x). You can assume the result of f1(x) and f2(x) can be
+    added together, and they both take in one argument.
+
+    >>> identity = lambda x: x       # returns input
+    >>> square = lambda x: x**2
+    >>> a1 = add_results(identity, square) # x + x^2
+    >>> a1(4)
+    20
+    >>> a2 = add_results(a1, identity)     # (x + x^2) + x
+    >>> a2(4)
+    24
+    >>> a2(5)
+    35
+    >>> a3 = add_results(a1, a2)           # (x + x^2) + (x + x^2 + x)
+    >>> a3(4)
+    44
+    """
+
+    return lambda x: f1(x) + f2(x)
+
+
+
+def lambda_math_syntax_check():
+    """Checks that definitions of summation_using_accumulate and
+    produce_using_accumulate are each a single return statement.
+
+    >>> # You aren't expected to understand the code of this test.
+    >>> # Check that the bodies of the functions are just return statements.
+    >>> # If this errors, make sure you have removed the "***YOUR CODE HERE***".
+    >>> import inspect, ast
+    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(mul_by_num)).body[0].body]
+    ['Expr', 'Return']
+    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(mod_maker)).body[0].body]
+    ['Expr', 'Return']
+    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(add_results)).body[0].body]
+    ['Expr', 'Return']
+    """
